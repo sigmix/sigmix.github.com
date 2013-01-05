@@ -3,20 +3,8 @@ title: about
 layout: page
 ---
 
-a
+SIGMIX is for Signal Mixed.
 
-> Minimalist | Appleist | Unixer | Coder
+A blog on Embedded System, FPGA Design and Computer Architecture.
 
-who involved in 
-
-> [github](https://github.com/waynezhang)
-
-mail 
-
-> echo srvpqxfbyqfvpdtkbjwt | tr yxwvtsrqpkjfdb zuonmlihgeca@.
-
-or follow 
-
-> [@o_lll](https://twitter.com/#!/o_lll)
-
-to reach me
+Maintained by sigmix (Andy).

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="zh-cn">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="sigmix (Andy)" />
+    
+    <title>SIGMIX</title>
+    
+    <link rel="shortcut icon" href="/media/favicon.ico">
+    <link href="/atom.xml" rel="alternate" title="SIGMIX" type="application/atom+xml" />
+    <link rel="stylesheet" href="/media/css/style.css">
+    <link rel="stylesheet" href="/media/css/github.css">
+    <link rel="stylesheet" href="/media/css/pygments.css">
+    <script type="text/javascript" src="/media/js/highlight.pack.js"></script>
+    <script type="text/javascript">
+      hljs.initHighlightingOnLoad();
+    </script>
+  </head>
+  <body>
+      <div id="main" role="main">
+        <header>
+          <div id="header">
+            <h1><a title="SIGMIX" class="" href="/">SIGMIX</a></h1>
+            <nav>
+              <span><a title="archive of articles" class="" href="/archive.html">archive</a></span>
+              <span><a title="articles by tags" class="" href="/tags.html">tags</a></span>
+              <span><a title="about SIGMIX" class="" href="/about.html">about</a></span>
+              <span><a title="blogroll" class="" href="/links.html">links</a></span>
+              <span><a title="subscribe SIGMIX" class="" href="/atom.xml">feed</a></span>
+            </nav>
+          </div>
+        </header>
+        <div id="content">
+        <div>
+  <ul class="listing">
+  
+  <article class="content">
+    <section class="title">
+      <h2><a href="/2013/01/05/unsecuring-the-kl25z-freedom-board.html">解除 KL25Z 开发板的加密状态 | Unsecuring the KL25Z Freedom Board</a></h2>
+    </section>
+    <section class="meta">
+    <span class="time">
+      <time datetime="2013-01-05">2013-01-05</time>
+    </span>
+    
+    <span class="tags">
+      
+      <a href="/tags.html#KL25Z" title="KL25Z">#KL25Z</a>
+      
+      <a href="/tags.html#unsecuring" title="unsecuring">#unsecuring</a>
+      
+      <a href="/tags.html#CodeWarrior" title="CodeWarrior">#CodeWarrior</a>
+      
+    </span>
+    
+    </section>
+    <section class="post">
+    <hr />
+
+<p>由 <strong>sigmix (Andy)</strong> 译自 <a href="http://mcuoneclipse.com/2012/10/26/unsecuring-the-kl25z-freedom-board/"><em>Unsecuring the KL25Z Freedom Board</em></a> ，原作者 <strong>Erich Styger</strong> 。 <br/>
+Translated by <strong>sigmix (Andy)</strong> from <a href="http://mcuoneclipse.com/2012/10/26/unsecuring-the-kl25z-freedom-board/"><em>Unsecuring the KL25Z Freedom Board</em></a> , originally authored by <strong>Erich Styger</strong>.</p>
+
+<hr />
+
+<p>在 <a href="http://mcuoneclipse.wordpress.com/2012/05/28/device-is-secure/">“Device is Secure”</a> 这篇博客里，我就遇到过开发板报告“设备已加密”的情况，不过后来发现，那只是个假警报。 但最近，<a href="https://community.freescale.com/message/304737">Freescale 论坛</a> 上又有人报告，说 <a href="http://mcuoneclipse.wordpress.com/2012/07/20/freertos-with-gcc-cortex-m0-and-kinetis-kl25z-freedom-board/">Freedom KL25Z</a> ，这块我也在用的开发板，可能确实会有被加密的问题。我自己的代码并不能复现问题，所以就让某位热心读者发了个会导致问题的二进制文件给我。</p>
+
+<p>好吧，我确实有点儿怕这个“杀手”文件会把我的开发板搞坏，但是管他呢，反正这块板也不贵，更何况我还一次订购了五块 :-) 。 于是我横下心来，用之前提到的 <a href="http://mcuoneclipse.wordpress.com/2012/04/30/flashing-with-a-button-and-a-magic-wand/">simple flash programmer</a> 把代码烧了进去。果然，当我再想调试的时候，这块黑色的 Freedom 开发板就提示我：</p>
+
+<p><img src="/media/files/2013/01/05/device-is-secure-erase-to-unsecure.png" title="Device is secure. Erase to unsecure." alt="" /></p>
+
+<blockquote><p>Device is Secure. Erase to unsecure?
+（设备已加密。是否擦除以解除加密？）</p></blockquote>
+
+<p>但无论我点多少次“yes”， <a href="http://mcuoneclipse.wordpress.com/2012/09/20/opensda-on-the-freedom-kl25z-board/">OpenSDA</a> 也并不能让设备解锁：</p>
+
+<p><img src="/media/files/2013/01/05/console-log.png" title="控制台日志" alt="" /></p>
+
+<p>几件值得考虑的事情：</p>
+
+<ul>
+<li>可以确定，开发板是好的（电源也好，其他部分也好）。问题只出在刚刚烧写进去的程序上。</li>
+<li>看一下电路原理图：虽然 <a href="http://mcuoneclipse.wordpress.com/2012/10/23/completing-the-frdm-kl25z-board/">R25</a> 电阻有些板有，有些板缺少，但它也和问题无关。</li>
+<li>我的经验表明，用 <a href="http://www.pemicro.com/osbdm">OSBDM/OSJTAG</a> 来解锁似乎从来都不会成功。相比之下，P&amp;E Multilink 就要好用得多，所以我桌上总是放着一个，即使在用的板只支持 OSJTAG, OSBDM 或者 OpenSDA 也是这样。</li>
+<li>悲剧的是：我不久前才订了 Freedom 开发板用的 JTAG 头，货还没有到，所以 Multilink 还用不了 :-( 。</li>
+</ul>
+
+
+<p></p>
+
+
+<h3>那问题是怎么解决的呢？</h3>
+
+<p>答案在 Freescale 论坛上。在 <a href="http://mcuoneclipse.wordpress.com/2012/09/25/codewarrior-for-mcu10-3-beta-is-now-available/">CodeWarrior MCU10.3 beta 发布</a> <strong>之后</strong>， P&amp;E 又放出了新的驱动。换上新的驱动，前面碰到的问题就解决了 :-) 。“device is secure”的提示还是会出现，不过只要进行一到两次的解锁操作，开发板就能够恢复正常 :-) 。</p>
+
+<p>把新的驱动文件整合进 Eclipse 和 MCU10.3 也很简单，只要遵循以下的说明：</p>
+
+<ol>
+<li>!! 这个补丁只针对 MCU10.3beta 版本！我<strong>不</strong>保证它能在其他任何版本的 CodeWarrior 下正常工作！</li>
+<li>作者不对补丁的可靠性做任何法律上的保证 !! ，所以请做好备份（在下面的步骤中会提到）！</li>
+<li>关闭 Eclipse/CodeWarrior，如果它还在运行的话。</li>
+<li>打开文件夹：<code>&lt;MCU10.3beta&gt;\MCU\bin\plugins\support\ARM</code></li>
+<li>文件夹下会有个叫做“gdi”的子文件夹。把子文件夹打成压缩包（作为备份）。然后删除“gdi”文件夹。注意，仅仅重命名是<strong>不够</strong>的，因为那样 CodeWarrior 还是会载入其中的 DLL 文件。或者，你也可以把整个“gdi”文件夹移动到 CodeWarrior 安装目录之外的某个地方。</li>
+<li><a href="http://www.steinerberg.com/EmbeddedComponents/Examples/FreedomBoard/gdi%20Unsecure%20Patch%20for%2010.3beta.zip">从这里</a> 下载 zip 文件，把它复制到步骤 3 中提到的文件夹处（ <code>&lt;MCU10.3beta&gt;\MCU\bin\plugins\support\ARM</code> ）。
+zip 文件中包含的的是打过补丁的 gdi 文件夹。把它解压为 <code>&lt;MCU10.3beta&gt;\MCU\bin\plugins\support\ARM\gdi</code> 。</li>
+<li>重新启动 Eclipse/CodeWarrior。现在，你应该能用它解除开发板的锁定状态了。至少在我这里没有问题 :-) 。</li>
+</ol>
+
+
+<p>解锁愉快 :-)</p>
+
+    </section>
+    </article>
+  
+  </ul>
+  <div class="center">
+  <a href="/archive.html" class="circle-wrapper">
+  <div class="circle">&nbsp;</div>
+  <div class="circle">&nbsp;</div>
+  <div class="circle">&nbsp;</div>
+  </a>
+  </div>
+</div>
+
+
+		
+        </div>
+        <footer>2013 <a href="http://creativecommons.org/licenses/by-nc/3.0/deed.en" title="Creative Commons BY-NC 3.0">(cc by-nc)</a> <a href="http://sigmix.github.com/" title="sigmix.github.com">sigmix (Andy)</a> | sourcecode based on <a href="http://lhzhang.com/" title="lhzhang.com">sext iv</a> and <a href="http://jekyllrb.com/" title="jekyllrb.com">jekyll</a> </footer>
+      </div> <!-- main -->
+  </body>
+</html>

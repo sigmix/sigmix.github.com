@@ -1,5 +1,12 @@
+permalink: /:year/:month/:day/:title.html
+name: SIGMIX
+
+safe: false
+
 markdown: rdiscount
 pygments: true
-permalink: /:year/:month/:day/:title.html
-name: setImpl
-markdown: rdiscount
+
+sass:
+    syntax: scss
+    style: compressed
+

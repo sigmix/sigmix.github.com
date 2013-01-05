@@ -1,3 +1,5 @@
+require 'uuid'
+
 task :default => :generate
 
 desc 'Create new post with rake "post[post-name]"'
@@ -40,20 +42,21 @@ def new_post(title)
     puts "Post already exists: #{filename}"
     return
   end
-  uuid = `uuidgen | tr "[:upper:]" "[:lower:]" | tr -d "\n"`
+  uuidgen = UUID.new
+  guid = uuidgen.generate
   File.open(filename, "wb") do |f|
     f << <<-EOS
 ---
 title: #{title}
 layout: post
-guid: urn:uuid:#{uuid}
+guid: urn:uuid:#{guid}
 tags:
   - 
 ---
 
 
 EOS
-  %x[echo "#{filename}" | pbcopy]
+  %x[echo "#{filename}"]
   end
   puts "created #{filename}"
   `git add #{filename}`
